@@ -1,7 +1,6 @@
 from database import Base
 from sqlalchemy import Column, Integer, String, Boolean, Float
 
-
 # Create Transaction model
 class Transaction(Base):
     __tablename__ = 'transaction'

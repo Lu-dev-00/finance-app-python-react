@@ -45,3 +45,17 @@ def get_db():
         yield db
     finally:
         db.close()
+
+# Sets up database dependency (creates database tables when app starts)
+db_dependency = Annotated[Session, Depends(get_db)]
+models.Base.metadata.create_all(bind=engine)
+
+# --- ENDPOITS ---
+
+@app.post("/transactions/", response_model=TransactionModel)
+async def create_transaction(transaction: TransactionBase, db: db_dependency):
+    db_transaction = models.Transaction(**transaction.model_dump())
+    db.add(db_transaction)
+    db.commit()
+    db.refresh()
+    return db_transaction
