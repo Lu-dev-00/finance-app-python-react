@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends
-from typing import Annotated
+from typing import Annotated, List
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from pydantic import BaseModel
@@ -57,5 +57,13 @@ async def create_transaction(transaction: TransactionBase, db: db_dependency):
     db_transaction = models.Transaction(**transaction.model_dump())
     db.add(db_transaction)
     db.commit()
-    db.refresh()
+    db.refresh(db_transaction)
     return db_transaction
+
+@app.get("/transactions/", response_model=List[TransactionModel])
+async def create_transactions(db: db_dependency, skip = 0, limit = 100):
+    transactions = db.query(models.Transaction).offset(skip).limit(limit).all()
+    return transactions
+
+# --- Endpoints ---
+
