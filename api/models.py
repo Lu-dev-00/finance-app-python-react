@@ -13,4 +13,3 @@ class Transaction(Base):
     is_income = Column(Boolean)
     date = Column(String)
 
-
