@@ -9,15 +9,15 @@ export default function Table(props) {
                     <th>Amount</th>
                     <th>Category</th>
                     <th>Description</th>
-                    <th>Date</th>
                     <th>Income?</th>
+                    <th>Date</th>
                     <th>Delete</th>
                 </tr>
             </thead>
             <tbody>
                 {props.data.map((transaction) => (
                     <tr key={transaction.id}>
-                        <td>{transaction.amount}</td>
+                        <td>£{transaction.amount}</td>
                         <td>{transaction.category}</td>
                         <td>{transaction.description}</td>
                         <td>{transaction.is_income ? 'Yes' : 'No'}</td>
