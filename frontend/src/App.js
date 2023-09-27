@@ -16,8 +16,12 @@ const App = () => {
 
 	//Create Functions
 	const fetchTransactions = async () => {
-		const response = await api.get('/transactions/');
-		setTransactions(response.data)
+		try {
+			const response = await api.get('/transactions/');
+			setTransactions(response.data)
+		} catch (error) {
+			console.log(error)
+		}	
 	};
 
 	// Runs once to populate transactions state
@@ -27,7 +31,7 @@ const App = () => {
 
 	// Updates the form data and updates the state 
 	const handleInputChange = async (event) => {
-		const value = event.target.value === 'checkbox' ? event.target.checked : event.target.value;
+		const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
 		setFormData({
 			...formData,
 			[event.target.name]: value,
@@ -47,6 +51,18 @@ const App = () => {
 			is_income: false,
 		});
 	}
+
+	const handleDelete = async (event) =>  {
+		event.preventDefault();
+		try {
+			api.delete(`/transactions/${event.target.id}`)
+		} catch (error) {
+			console.log(error);
+		}
+		fetchTransactions();
+	}
+
+	
 
 	//Return site content
 	return (
@@ -79,14 +95,14 @@ const App = () => {
 						<input id='date' name='date' onChange={handleInputChange} value={formData.date} type='date' className='form-control' />
 					</div>
 					<div className='mb-3 mt-3'>
-						<label htmlFor='income' className='form-label'>
+						<label htmlFor='is_income' className='form-label'>
 							Income
 						</label>
-						<input id='income' name='income' onChange={handleInputChange} value={formData.is_income} type='checkbox' className='form-checkbox ms-2' />
+						<input id='is_income' name='is_income' onChange={handleInputChange} value={formData.is_income} type='checkbox' className='form-checkbox ms-2' />
 					</div>
 					<button onClick={handleFormSubmit} className='btn btn-primary'>Submit</button>
 				</form>
-				<Table data={transactions}/>
+				<Table data={transactions} delete={handleDelete}/>
 			</div>
 
 			

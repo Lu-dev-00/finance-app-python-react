@@ -2,7 +2,6 @@ from fastapi import FastAPI, HTTPException, Depends
 from typing import Annotated, List
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
-from pydantic import BaseModel
 from database import SessionLocal, engine
 from fastapi.middleware.cors import CORSMiddleware
 import models
@@ -13,6 +12,7 @@ app = FastAPI()
 origins = [
     'http://localhost:3000',
     'http://localhost:3001',
+    'http://localhost:3001/*',
 ]
 
 # Setup and configure cors middleware
@@ -65,6 +65,14 @@ async def create_transaction(transaction: TransactionBase, db: db_dependency):
 async def create_transactions(db: db_dependency, skip = 0, limit = 100):
     transactions = db.query(models.Transaction).offset(skip).limit(limit).all()
     return transactions
+
+@app.delete("/transactions/{item_id}")
+async def delete_transaction(item_id: int, db: db_dependency):
+    db_transaction = db.query(models.Transaction).filter(models.Transaction.id == item_id).first()
+    if db_transaction is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+    db.delete(db_transaction)
+    db.commit()
 
 # --- Endpoints ---
 

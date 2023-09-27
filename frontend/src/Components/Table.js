@@ -22,7 +22,7 @@ export default function Table(props) {
                         <td>{transaction.description}</td>
                         <td>{transaction.is_income ? 'Yes' : 'No'}</td>
                         <td>{transaction.date}</td>
-                        <td><button className='btn btn-secondary '>Delete</button></td>
+                        <td><button id={transaction.id} className='btn btn-primary' onClick={props.delete}>Delete</button></td>
                     </tr>
                 ))}
             </tbody>
